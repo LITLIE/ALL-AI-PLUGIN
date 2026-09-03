@@ -1,0 +1,9 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "agent-crew",
+  "displayName": "Agent Crew",
+  "version": "0.1.0",
+  "description": "让你自己设定的 agent（Trae、Workbuddy、Critic、外部 Codex CLI…）在一条可落盘的消息总线上协作：多方讨论/辩论与流水线接力两种模式，跨会话可续。",
+  "license": "MIT",
+  "keywords": ["multi-agent", "collaboration", "orchestration", "message-bus", "mcp", "codex"]
+}

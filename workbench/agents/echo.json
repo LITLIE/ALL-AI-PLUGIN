@@ -1,0 +1,20 @@
+// agents/echo.json — Echo 假适配器（确定性，零网络，零 token，用于链路验证）
+// 用法：放入 workbench/agents/ 目录，刷新 UI 即可见
+{
+  "id": "echo-test",
+  "displayName": "Echo（测试用）",
+  "type": "echo",
+  "outputProtocol": "echo",
+  "riskLevel": "read-only",
+  "capabilityTags": ["read", "write", "test"],
+  "command": null,
+  "args": [],
+  "env": {},
+  "healthCheck": null,
+  "sessionMode": false,
+  "interruptMethod": null,
+  "timeoutDefault": 5000,
+  "timeoutMax": 10000,
+  "maxRetries": 0,
+  "notes": "Echo 是内置假适配器，收到 prompt 后 sleep 500ms 然后原样回显，用于验证注册→分派→执行→回帖全链路。确定性、零网络、零 token，可自动化测试。"
+}

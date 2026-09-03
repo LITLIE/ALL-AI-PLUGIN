@@ -1,0 +1,32 @@
+{
+  "id": "claude",
+  "displayName": "Claude Code",
+  "type": "claude-stream-json",
+  "outputProtocol": "stream-json",
+  "riskLevel": "read-only",
+  "capabilityTags": [
+    "read",
+    "write",
+    "refactor",
+    "analyze",
+    "test",
+    "review",
+    "design"
+  ],
+  "enabled": true,
+  "command": "claude",
+  "args": [
+    "-p",
+    "{{prompt}}",
+    "--output-format", "stream-json",
+    "--include-partial-messages",
+    "--no-session-persistence",
+    "--verbose"
+  ],
+  "env": {},
+  "healthCheck": {
+    "command": "claude",
+    "args": ["--version"],
+    "expect": "Claude"
+  }
+}

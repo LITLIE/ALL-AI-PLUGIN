@@ -1,0 +1,46 @@
+{
+  "_comment": "把需要的条目抄进 <project>/.agentbus/roles.json 的 roles 数组里，或用 crew.mjs role add 生成。占位符 {{prompt}} 会被换成完整 briefing，{{project}} 换成项目根目录；args 里不写 {{prompt}} 时 briefing 走 stdin。",
+  "roles": [
+    {
+      "id": "reviewer",
+      "name": "Reviewer",
+      "title": "只读代码评审",
+      "specialty": "正确性、边界条件、错误处理",
+      "backend": { "type": "claude-subagent", "agent": "reviewer" },
+      "_note": "agent 是裸名时，对应 <project>/.claude/agents/reviewer.md；写成 agent-crew:xxx 时对应插件自带的子智能体。"
+    },
+    {
+      "id": "codex-fix",
+      "name": "Codex (可写)",
+      "title": "外部 CLI，允许改工作区",
+      "backend": {
+        "type": "cli",
+        "command": "codex",
+        "args": ["exec", "--skip-git-repo-check", "--sandbox", "workspace-write", "-C", "{{project}}", "-"],
+        "stdinPrompt": true,
+        "timeoutMs": 1800000
+      },
+      "_note": "workspace-write 会让外部 agent 真的改你的文件。默认的 codex 角色是 read-only，只有明确需要它动手时才加这个。"
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "title": "外部 CLI（示例，需自行安装 gemini）",
+      "backend": {
+        "type": "cli",
+        "command": "gemini",
+        "args": ["-p", "{{prompt}}"],
+        "stdinPrompt": false,
+        "timeoutMs": 900000
+      },
+      "_note": "参数走数组直接 spawn，不经过 shell。注意：Windows 上如果 gemini 是 npm 装出来的 .cmd 包装脚本，必须经 cmd.exe 启动，此时把 {{prompt}} 放进 args 会在提示词含 shell 元字符时被拒绝 —— 稳妥做法是删掉 args 里的 {{prompt}} 并去掉 stdinPrompt: false，让 briefing 走 stdin。"
+    },
+    {
+      "id": "pm",
+      "name": "PM",
+      "title": "需求与优先级",
+      "specialty": "用户价值、范围裁剪、验收标准",
+      "backend": { "type": "claude-subagent", "agent": "pm" }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "agent-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local AI Agent orchestration workbench — event-sourced, maker-checker gated, auditable.",
+  "bin": { "awb": "./awb.mjs" },
+  "scripts": {
+    "test": "node --test",
+    "start": "node awb.mjs serve",
+    "serve": "node awb.mjs serve",
+    "agents:list": "node awb.mjs agents:list",
+    "task:create": "node awb.mjs task:create",
+    "task:dispatch": "node awb.mjs task:dispatch",
+    "task:verdict": "node awb.mjs task:verdict"
+  },
+  "engines": { "node": ">=22.0.0" },
+  "dependencies": {},
+  "devDependencies": {}
+}

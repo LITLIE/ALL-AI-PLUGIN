@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "mcp__plugin_agent-crew_crew__agent_roster",
+      "PowerShell(foreach \\($c in 'codex','gemini','cursor-agent','qwen','trae','aider','opencode','crush','copilot','amp','goose','droid','iflow','claude','kimi','grok','cline','continue'\\) { $s = $null; try { $s = \\(Get-Command $c -ErrorAction Stop\\).Source } catch {} ; if \\($s\\) { \"OK   $c -> $s\" } else { \"--   $c\" } })",
+      "PowerShell(kimi *)",
+      "PowerShell(\\(Get-Item \"D:/Agentplugin/plugins/agent-crew/scripts/crew.mjs\"\\).Length; \\(Get-Content \"D:/Agentplugin/plugins/agent-crew/scripts/crew.mjs\" | Measure-Object -Line\\).Lines)",
+      "PowerShell(& \"D:\\\\TRAE SOLO CN\\\\bin\\\\trae-solo-cn.cmd\" --help)",
+      "PowerShell(& \"D:\\\\TRAE SOLO CN\\\\bin\\\\trae-solo-cn.cmd\" chat --help)",
+      "PowerShell($s=$null; try { $s=\\(Get-Command codebuddy -ErrorAction Stop\\).Source } catch {}; if \\($s\\) { \"PATH: $s\" } else { \"codebuddy not on PATH\" }; Get-ChildItem -LiteralPath \"D:\\\\WorkBuddy\\\\resources\\\\app.asar.unpacked\\\\cli\\\\bin\" | Select-Object Length,Name | Format-Table -AutoSize | Out-String -Width 120)"
+    ]
+  },
+  "enabledPlugins": {
+    "agent-crew@agentplugin-local": true
+  }
+}

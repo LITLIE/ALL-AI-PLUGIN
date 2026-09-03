@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "tags": [
+    "read",
+    "write",
+    "refactor",
+    "analyze",
+    "test",
+    "review",
+    "design"
+  ]
+}

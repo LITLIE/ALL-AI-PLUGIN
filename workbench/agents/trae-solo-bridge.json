@@ -1,0 +1,27 @@
+// agents/trae-solo-bridge.json — Trae SOLO 人工桥接适配器（GUI 型 Agent）
+// 用法：放入 workbench/agents/ 目录，刷新 UI 即可见
+// 机制：生成可一键复制的 briefing → 人工在 Trae SOLO 执行 → 粘贴结果回写
+// 产出由人工回填，标记 meta.via="human-bridge" + meta.untrusted=true
+{
+  "id": "trae-solo-bridge",
+  "displayName": "Trae SOLO（人工桥接）",
+  "type": "human-bridge",
+  "outputProtocol": "human-bridge",
+  "riskLevel": "workspace-write",
+  "capabilityTags": ["write", "refactor", "design", "analyze"],
+  "command": null,
+  "args": [],
+  "env": {},
+  "healthCheck": null,
+  "sessionMode": false,
+  "interruptMethod": null,
+  "timeoutDefault": 600000,
+  "timeoutMax": 1800000,
+  "maxRetries": 0,
+  "notes": "GUI 型 Agent，无 CLI 入口。workbench 生成 briefing 后复制到剪贴板，人工在 Trae SOLO 执行后粘贴回执。产出由人工回填，总线事件标记 meta.via='human-bridge' + meta.untrusted=true。",
+  "bridgeInstructions": {
+    "prompt": "请将以下任务在 Trae SOLO 中完成，并把产出（文件变更清单、diff、测试结果）粘贴回工作台。",
+    "copyButton": true,
+    "pasteInput": true
+  }
+}

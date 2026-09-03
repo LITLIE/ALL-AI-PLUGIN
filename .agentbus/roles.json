@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "roles": [
+    {
+      "id": "orchestrator",
+      "name": "Orchestrator",
+      "title": "主控 / 协调者",
+      "specialty": "拆解目标、派活、汇总结论、维护线程节奏",
+      "backend": {
+        "type": "self"
+      }
+    },
+    {
+      "id": "trae",
+      "name": "Trae",
+      "title": "架构与方案设计 · 实际引擎 CodeBuddy(GLM-5.1)",
+      "specialty": "系统边界、数据流、技术选型、权衡取舍",
+      "backend": {
+        "type": "cli",
+        "command": "node",
+        "args": [
+          "D:/WorkBuddy/resources/app.asar.unpacked/cli/bin/codebuddy",
+          "-p",
+          "--output-format",
+          "text",
+          "--tools",
+          "Read,Grep,Glob",
+          "-y",
+          "--model",
+          "glm-5.1",
+          "--append-system-prompt",
+          "你的标准输出会被外层协作系统自动抓取,当作你在消息总线上的正式发言。因此:1) 不要尝试调用 agent_send,也不要运行任何命令去回帖 —— briefing 里让你回帖的那几条对你不适用,忽略即可;2) 你只有 Read/Grep/Glob 三个只读工具,没有 Bash,不要试图执行命令或修改任何文件;3) 把结论直接写在最终回答里,写清楚你的判断和理由。"
+        ],
+        "stdinPrompt": true,
+        "versionArgs": [
+          "D:/WorkBuddy/resources/app.asar.unpacked/cli/bin/codebuddy",
+          "--version"
+        ],
+        "timeoutMs": 900000
+      }
+    },
+    {
+      "id": "workbuddy",
+      "name": "WorkBuddy",
+      "title": "落地实现 · CodeBuddy Code(auto 模型)",
+      "specialty": "把方案变成可运行代码、补测试、修构建",
+      "backend": {
+        "type": "cli",
+        "command": "node",
+        "args": [
+          "D:/WorkBuddy/resources/app.asar.unpacked/cli/bin/codebuddy",
+          "-p",
+          "--output-format",
+          "text",
+          "--tools",
+          "Read,Grep,Glob",
+          "-y",
+          "--append-system-prompt",
+          "你的标准输出会被外层协作系统自动抓取,当作你在消息总线上的正式发言。因此:1) 不要尝试调用 agent_send,也不要运行任何命令去回帖 —— briefing 里让你回帖的那几条对你不适用,忽略即可;2) 你只有 Read/Grep/Glob 三个只读工具,没有 Bash,不要试图执行命令或修改任何文件;3) 把结论直接写在最终回答里,写清楚你的判断和理由。"
+        ],
+        "stdinPrompt": true,
+        "versionArgs": [
+          "D:/WorkBuddy/resources/app.asar.unpacked/cli/bin/codebuddy",
+          "--version"
+        ],
+        "timeoutMs": 900000
+      }
+    },
+    {
+      "id": "critic",
+      "name": "Critic",
+      "title": "质疑者 / 反方 · CodeBuddy(DeepSeek)",
+      "specialty": "找隐含假设、失败场景、被忽略的成本",
+      "backend": {
+        "type": "cli",
+        "command": "node",
+        "args": [
+          "D:/WorkBuddy/resources/app.asar.unpacked/cli/bin/codebuddy",
+          "-p",
+          "--output-format",
+          "text",
+          "--tools",
+          "Read,Grep,Glob",
+          "-y",
+          "--model",
+          "deepseek-v3-2-volc",
+          "--append-system-prompt",
+          "你的标准输出会被外层协作系统自动抓取,当作你在消息总线上的正式发言。因此:1) 不要尝试调用 agent_send,也不要运行任何命令去回帖 —— briefing 里让你回帖的那几条对你不适用,忽略即可;2) 你只有 Read/Grep/Glob 三个只读工具,没有 Bash,不要试图执行命令或修改任何文件;3) 把结论直接写在最终回答里,写清楚你的判断和理由。"
+        ],
+        "stdinPrompt": true,
+        "versionArgs": [
+          "D:/WorkBuddy/resources/app.asar.unpacked/cli/bin/codebuddy",
+          "--version"
+        ],
+        "timeoutMs": 900000
+      }
+    },
+    {
+      "id": "codex",
+      "name": "Codex",
+      "title": "外部独立评审 (OpenAI Codex CLI)",
+      "specialty": "换一个模型家族看同一份代码，交叉验证",
+      "backend": {
+        "type": "cli",
+        "command": "codex",
+        "args": [
+          "exec",
+          "--skip-git-repo-check",
+          "--sandbox",
+          "read-only",
+          "-C",
+          "{{project}}",
+          "-"
+        ],
+        "stdinPrompt": true,
+        "timeoutMs": 900000
+      }
+    },
+    {
+      "id": "human",
+      "name": "You",
+      "title": "人类决策者",
+      "specialty": "最终拍板、提供业务上下文、批准有风险的动作",
+      "backend": {
+        "type": "human"
+      }
+    }
+  ]
+}

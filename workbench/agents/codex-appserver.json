@@ -1,0 +1,25 @@
+// agents/codex-appserver.json — Codex CLI 适配器（JSON-RPC over stdio，长连接会话）
+// 用法：放入 workbench/agents/ 目录，刷新 UI 即可见
+{
+  "id": "codex-app",
+  "displayName": "Codex CLI",
+  "type": "codex-app-server",
+  "outputProtocol": "native-jsonrpc",
+  "riskLevel": "workspace-write",
+  "capabilityTags": ["write", "refactor", "analyze", "test", "read"],
+  "command": "codex",
+  "args": ["app-server"],
+  "env": {},
+  "healthCheck": {
+    "command": "codex",
+    "args": ["--version"],
+    "expect": "codex"
+  },
+  "sessionMode": true,
+  "interruptMethod": "jsonrpc-turn-interrupt",
+  "timeoutDefault": 300000,
+  "timeoutMax": 600000,
+  "maxRetries": 2,
+  "retryableErrors": ["rate_limit", "api_error"],
+  "notes": "Codex 原生协议，支持 turn/interrupt（超时中断）、thread/rollback（回滚）、turn/diff/updated（变更采集）、server→client 审批请求（人工确认）。app-server 是长连接会话，不要 kill 主进程，优雅关闭用 thread/abort。"
+}

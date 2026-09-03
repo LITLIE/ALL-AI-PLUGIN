@@ -1,0 +1,17 @@
+{
+  "id": "trae",
+  "displayName": "Trae",
+  "type": "human-bridge",
+  "outputProtocol": "human-bridge",
+  "riskLevel": "read-only",
+  "capabilityTags": [
+    "read",
+    "write",
+    "refactor",
+    "analyze",
+    "test",
+    "review",
+    "design"
+  ],
+  "enabled": true
+}

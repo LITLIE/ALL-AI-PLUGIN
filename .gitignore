@@ -1,0 +1,9 @@
+# 协作记录默认留档；只当草稿用的话把下面一行取消注释
+# .agentbus/
+
+.agentbus/runs/
+node_modules/
+*.log
+
+# 工作台运行时状态(事件日志/运行沙箱),不提交
+workbench/.awb/

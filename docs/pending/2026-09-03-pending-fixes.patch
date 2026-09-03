@@ -1,0 +1,69 @@
+diff --git a/workbench/adapters/codex-app-server.mjs b/workbench/adapters/codex-app-server.mjs
+index 9ce3500..165b58a 100644
+--- a/workbench/adapters/codex-app-server.mjs
++++ b/workbench/adapters/codex-app-server.mjs
+@@ -75,6 +75,11 @@ async function connect({ cwd, agentConfig = {} }) {
+     proc.stdin.write(`${JSON.stringify({ jsonrpc: '2.0', id, method, params })}\n`);
+     return new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
+   };
++  // 出站通知(无 id、无响应),用于 initialize 后的 initialized 握手
++  const sendNotification = (method, params = {}) => {
++    if (closed) return;
++    proc.stdin.write(`${JSON.stringify({ jsonrpc: '2.0', method, params })}\n`);
++  };
+   const waitFor = (predicate, timeoutMs) => new Promise((resolve, reject) => {
+     const existing = notifications.find(predicate);
+     if (existing) { resolve(existing); return; }
+@@ -87,7 +92,7 @@ async function connect({ cwd, agentConfig = {} }) {
+     if (timeoutMs) waiter.timer = setTimeout(() => { const index = waiters.indexOf(waiter); if (index >= 0) waiters.splice(index, 1); reject(new Error(`Timed out waiting for Codex notification after ${timeoutMs}ms`)); }, timeoutMs);
+   });
+   const close = async () => { if (closed) return; try { proc.stdin.end(); } catch {} if (proc.pid) await killProcessTree(proc.pid).catch(() => proc.kill()); };
+-  return { proc, send, notifications, waitFor, close, plan };
++  return { proc, send, sendNotification, notifications, waitFor, close, plan };
+ }
+ 
+ const adapter = {
+@@ -106,11 +111,14 @@ const adapter = {
+       activeSessions.set(runId, session);
+       const init = await session.send('initialize', { protocolVersion: '1.0', capabilities: { streaming: true }, clientInfo: { name: 'awb-workbench', version: '0.1.0' } });
+       yield { type: 'run.init', ...ctx, userAgent: init.userAgent, ts: Date.now() };
++      // Codex app-server 握手:initialize 后须补发 initialized 通知
++      session.sendNotification('initialized', {});
+       const threadResult = await session.send('thread/start', {});
+       const threadId = threadResult.thread?.id || threadResult.id;
+       session.threadId = threadId;
+       yield { type: 'codex.thread.started', ...ctx, threadId, ts: Date.now() };
+-      const turnResult = await session.send('turn/start', { threadId, message: { role: 'user', content: prompt } });
++      // turn/start 的 input 必须是文本项数组(协议要求,缺失会报 missing field `input`)
++      const turnResult = await session.send('turn/start', { threadId, input: [{ type: 'text', text: prompt }] });
+       const turnId = turnResult.turn?.id || turnResult.id;
+       session.turnId = turnId;
+       yield { type: 'codex.turn.started', ...ctx, turnId, threadId, status: 'inProgress', ts: Date.now() };
+diff --git a/workbench/agents/claude.json b/workbench/agents/claude.json
+index 83d31fb..bc09725 100644
+--- a/workbench/agents/claude.json
++++ b/workbench/agents/claude.json
+@@ -21,7 +21,8 @@
+     "--output-format", "stream-json",
+     "--include-partial-messages",
+     "--no-session-persistence",
+-    "--verbose"
++    "--verbose",
++    "--permission-mode", "acceptEdits"
+   ],
+   "env": {},
+   "healthCheck": {
+diff --git a/workbench/awb.mjs b/workbench/awb.mjs
+index 4714d30..910f35c 100644
+--- a/workbench/awb.mjs
++++ b/workbench/awb.mjs
+@@ -109,7 +109,8 @@ async function serve() {
+   const { startServer } = await import('./server/http.mjs');
+   const port = Number(process.env.AWB_PORT || 7788);
+   const host = process.env.AWB_HOST || '127.0.0.1';
+-  await startServer({ host, port });
++  const agentsDir = process.env.AWB_AGENTS_DIR ? resolve(process.env.AWB_AGENTS_DIR) : undefined;
++  await startServer({ host, port, agentsDir });
+ 
+   if (!process.env.AWB_NO_BROWSER) {
+     const url = `http://${host}:${port}`;
